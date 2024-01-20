@@ -3,14 +3,15 @@ import { CORE_CONCEPTS } from "./data";
 import Header from "./components/Header.jsx";
 import CoreConcept from "./components/CoreConcept.jsx";
 import TabButton from "./components/TabButton.jsx";
-import ResponsiveContactForm from "./components/ResponsiveContactForm.jsx"
+import { useState } from 'react';
+import {EXAMPLES} from './data.js'
 
 function App() {
-  let tabContent = "Please click on a button";
+  const [ selectedTopic, setSelectedTopic ] = useState();
+  
 
   function handleClick(selectedButton) {
-    tabContent = selectedButton;
-    alert(tabContent);
+    setSelectedTopic(selectedButton);
   }
 
   return (
@@ -20,25 +21,31 @@ function App() {
         <section id="core-concepts">
           <h2>Core Concepts</h2>
           <ul>
-            <CoreConcept {...CORE_CONCEPTS[0]} />
-            <CoreConcept {...CORE_CONCEPTS[1]} />
-            <CoreConcept {...CORE_CONCEPTS[2]} />
-            <CoreConcept {...CORE_CONCEPTS[3]} />
+            {CORE_CONCEPTS.map((item)=> (<CoreConcept key={item.title} {...item}/>
+             ))}
           </ul>
         </section>
         <h2>Time to get started!</h2>
         <section id="examples">
           <h2>Examples</h2>
           <menu>
-            <TabButton onSelect={() => handleClick("components")}>
+            <TabButton isSelected={selectedTopic ==='components'} onSelect={() => handleClick("components")}>
               Components
             </TabButton>
-            <TabButton onSelect={() => handleClick("jsx")}>JSX</TabButton>
-            <TabButton onSelect={() => handleClick("props")}>Props</TabButton>
-            <TabButton onSelect={() => handleClick("state")}>State</TabButton>
+            <TabButton isSelected={selectedTopic ==='jsx'} onSelect={() => handleClick("jsx")}>JSX</TabButton>
+            <TabButton isSelected={selectedTopic ==='props'} onSelect={() => handleClick("props")}>Props</TabButton>
+            <TabButton isSelected={selectedTopic ==='state'} onSelect={() => handleClick("state")}>State</TabButton>
           </menu>
-          {tabContent}
-          <ResponsiveContactForm />
+          
+            { !selectedTopic ? ( <p> Please! Select a topic</p> ) : ( 
+            <div id="tab-content"> 
+            <h3>{EXAMPLES[selectedTopic].title}</h3>
+            <p>{EXAMPLES[selectedTopic].description}</p>
+            <pre>{EXAMPLES[selectedTopic].code}</pre>
+          </div>
+          )}
+            
+         
         </section>
         
       </main>
